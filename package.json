@@ -1,0 +1,31 @@
+{
+  "name": "backobjetperdu",
+  "version": "1.0.0",
+  "description": "Application permettant de chercher les objets perdus grâce à l'api de la SNCF",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shein1/backObjetPerdu.git"
+  },
+  "author": "SheyZen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Shein1/backObjetPerdu/issues"
+  },
+  "homepage": "https://github.com/Shein1/backObjetPerdu#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-flow": "^6.23.0",
+    "flow-bin": "^0.33.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "nodemon": "^1.17.5",
+    "sequelize": "^4.38.0"
+  }
+}
