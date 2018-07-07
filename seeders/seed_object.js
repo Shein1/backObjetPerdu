@@ -1,19 +1,23 @@
 import { db as database } from '../models';
-import Objets from '../models/object';
+import FoundObject from '../models/object';
 import axios from 'axios';
 
 import dotenv from 'dotenv';
 dotenv.config();
 
+/**
+  @ Init of database with sncf api
+**/
+
 database
-  .sync()
+  .sync({ force: true })
   .then(async () => {
-    let URL = process.env.URL;
+    let URL: any = process.env.URL;
 
     axios.get(`${URL}`).then(async response => {
       const res = response.data.records;
       for (var i = 0; i < res.length; i++) {
-        let _ = new Objets({
+        let _ = new FoundObject({
           date: res[i].fields.date,
           typeObject: res[i].fields.gc_obo_type_c,
           natureObject: res[i].fields.gc_obo_nature_c,

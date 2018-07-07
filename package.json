@@ -4,7 +4,7 @@
   "description": "Application permettant de chercher les objets perdus grâce à l'api de la SNCF",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js --exec babel-node",
     "flow": "flow",
     "seed_object": " babel-node ./seeders/seed_object"
   },

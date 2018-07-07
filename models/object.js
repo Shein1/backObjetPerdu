@@ -1,6 +1,6 @@
 import { Model } from 'sequelize';
 
-export default class Objet extends Model {
+export default class FoundObject extends Model {
   static init(sequelize, DataTypes) {
     super.init(
       {
