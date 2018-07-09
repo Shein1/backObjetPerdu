@@ -13,6 +13,10 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extend: false }));
 
+/**
+  @ Sync of DB, if the server is up then launching server
+**/
+
 db.sync().then(() => {
   app.use('/api', routes);
 

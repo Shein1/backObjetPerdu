@@ -21,5 +21,8 @@ User.init(db, Sequelize);
 Alert.init(db, Sequelize);
 FoundObject.init(db, Sequelize);
 
+/**
+  @Foreign Key init
+**/
 User.hasMany(Alert);
 Alert.belongsTo(User, { constraints: false });
