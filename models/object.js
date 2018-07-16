@@ -11,19 +11,18 @@ export default class FoundObject extends Model {
           allowNull: false
         },
         date: {
-          type: DataTypes.DATE,
-          allowNull: false
+          type: DataTypes.DATE
         },
         typeObject: {
-          type: DataTypes.STRING,
+          type: DataTypes.INTEGER,
           allowNull: false
         },
         natureObject: {
-          type: DataTypes.STRING,
+          type: DataTypes.INTEGER,
           allowNull: false
         },
         station: {
-          type: DataTypes.STRING,
+          type: DataTypes.INTEGER,
           allowNull: true
         },
         returnDate: {

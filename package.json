@@ -1,12 +1,14 @@
 {
   "name": "backobjetperdu",
   "version": "1.0.0",
-  "description": "Application permettant de chercher les objets perdus grâce à l'api de la SNCF",
+  "description":
+    "Application permettant de chercher les objets perdus grâce à l'api de la SNCF",
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js --exec babel-node",
     "flow": "flow",
-    "seed_object": " babel-node ./seeders/seed_object"
+    "seed_object": " babel-node ./seeders/seed_object",
+    "seed_station": " babel-node ./seeders/seed_station"
   },
   "repository": {
     "type": "git",

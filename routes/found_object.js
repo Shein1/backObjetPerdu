@@ -12,7 +12,6 @@ let api = Router();
 **/
 
 api.get('/', async (req, res) => {
-  console.log(req.query);
   let objects = await FoundObject.findAll({
     where: {
       station: req.query.station
@@ -26,7 +25,7 @@ api.get('/', async (req, res) => {
         : { [Op.ne]: null },
       returnDate: null
     },
-    order: [['id', 'DESC']]
+    order: [['date', 'desc']]
   });
   res.json({ objects });
 });

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import lostObject from './found_object';
+import user from './user';
 
 let api = Router();
 
@@ -16,5 +17,6 @@ api.get('/', (req, res) => {
 **/
 
 api.use('/lost_object', lostObject);
+api.use('/user', user);
 
 export default api;

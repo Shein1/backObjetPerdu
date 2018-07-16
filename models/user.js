@@ -10,8 +10,13 @@ export default class User extends Model {
           primaryKey: true,
           allowNull: false
         },
+        uuid: {
+          type: DataTypes.UUID,
+          defaultValue: DataTypes.UUIDV4,
+          allowNull: false
+        },
         username: {
-          type: DataTypes.DATE,
+          type: DataTypes.STRING,
           allowNull: false
         },
         email: {
