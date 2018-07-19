@@ -7,8 +7,7 @@
   "scripts": {
     "start": "nodemon server.js --exec babel-node",
     "flow": "flow",
-    "seed_object": " babel-node ./seeders/seed_object",
-    "seed_station": " babel-node ./seeders/seed_station"
+    "seed_object": " babel-node ./seeders/seed_object"
   },
   "repository": {
     "type": "git",

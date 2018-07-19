@@ -39,7 +39,7 @@ api.get('/:userid/alert', async (req, res) => {
       res.json({ alerts });
     }
   } catch (e) {
-    res.status(400).json({});
+    res.status(400).json({ e });
   }
 });
 

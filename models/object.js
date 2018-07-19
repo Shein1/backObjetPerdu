@@ -11,7 +11,7 @@ export default class FoundObject extends Model {
           allowNull: false
         },
         date: {
-          type: DataTypes.DATE
+          type: DataTypes.INTEGER
         },
         typeObject: {
           type: DataTypes.INTEGER,

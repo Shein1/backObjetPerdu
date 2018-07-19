@@ -11,19 +11,19 @@ export default class Alert extends Model {
           allowNull: false
         },
         date: {
-          type: DataTypes.DATE,
+          type: DataTypes.INTEGER,
           allowNull: true
         },
         typeObject: {
-          type: DataTypes.STRING,
+          type: DataTypes.INTEGER,
           allowNull: true
         },
         natureObject: {
-          type: DataTypes.STRING,
+          type: DataTypes.INTEGER,
           allowNull: true
         },
         station: {
-          type: DataTypes.STRING,
+          type: DataTypes.INTEGER,
           allowNull: true
         }
       },
