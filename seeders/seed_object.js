@@ -22,6 +22,7 @@ database
     console.log('2');
 
     await axios.get(`${baseURL}`).then(async response => {
+      console.log('------->', response);
       let data = response.data.records;
       for (let i = 0; i < data.length; i++) {
         const name = data[i].fields.gc_obo_gare_origine_r_name;
