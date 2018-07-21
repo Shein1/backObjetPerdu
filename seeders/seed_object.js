@@ -22,6 +22,7 @@ database
     console.log('2');
 
     const response = await axios.get(`${URL}`);
+    console.log('3');
     let data = response.data.records;
 
     for (let i = 0; i < data.length; i++) {
@@ -108,7 +109,6 @@ database
         returnDate: data[i].fields.gc_obo_date_heure_restitution_c
       });
       await obj.save();
-      console.log('3');
     }
   })
 
