@@ -13,11 +13,13 @@ dotenv.config();
 /**
   @ Init of table lostObject with sncf api
 **/
-
+console.log('1');
 database
   .sync()
   .then(async () => {
     let URL = process.env.URL;
+
+    console.log('2');
 
     const response = await axios.get(`${URL}`);
     let data = response.data.records;
@@ -106,6 +108,7 @@ database
         returnDate: data[i].fields.gc_obo_date_heure_restitution_c
       });
       await obj.save();
+      console.log('3');
     }
   })
 
