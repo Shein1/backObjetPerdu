@@ -21,7 +21,7 @@ database
 
     console.log('2');
 
-    await axios.get(`${baseURL}`).then(async response => {
+    axios.get(`${baseURL}`).then(async response => {
       console.log('------->', response);
       let data = response.data.records;
       for (let i = 0; i < data.length; i++) {
