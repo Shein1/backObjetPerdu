@@ -17,11 +17,11 @@ console.log('1');
 database
   .sync()
   .then(async () => {
-    let URL = process.env.URL;
+    let baseURL = process.env.URL;
 
     console.log('2');
 
-    const response = await axios.get(`${URL}`);
+    const response = await axios.get(`${baseURL}`);
     console.log('3');
     let data = response.data.records;
 
