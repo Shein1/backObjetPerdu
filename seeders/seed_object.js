@@ -22,7 +22,7 @@ database
     console.log('2');
 
     const response = await axios.get(`${baseURL}`);
-    console.log('3');
+    console.log(('----------> response : ', response));
     let data = response.data.records;
 
     for (let i = 0; i < data.length; i++) {
