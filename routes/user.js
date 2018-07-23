@@ -1,9 +1,80 @@
 import { Router } from 'express';
+import uuid from 'uuid/v4';
 import User from '../models/user';
 import Sequelize, { Op } from 'sequelize';
 import Alert from '../models/alert';
 
 let api = Router();
+
+/**
+  @ Search if the email given by user is already in base
+  @ If not, create a new user in db with information the user gave
+  @ If yes, create an alert and send alert and user information
+**/
+
+api.post('/alert', async (req, res) => {
+  const { username, email, date, nature, station, type } = req.body;
+  let userid = uuid();
+  try {
+    let user = await User.findOne({
+      attributes: ['id', 'uuid', 'email', 'username'],
+      where: {
+        email: email
+      }
+    });
+
+    if (!user) {
+      user = new User({
+        uuid: userid,
+        email: email,
+        username: username
+      });
+      await user.save();
+    }
+
+    try {
+      let alert = new Alert({
+        date: date,
+        natureObject: nature,
+        typeObject: type,
+        station: station,
+        user_id: user.id
+      });
+      await alert.save();
+
+      res.json({ alert, user });
+    } catch (e) {
+      res.status(400);
+    }
+  } catch (err) {
+    res.status(400);
+  }
+});
+
+/**
+  @ Get all alert created
+**/
+
+api.get('/alerts', async (req, res) => {
+  try {
+    let alerts = await Alert.findAll({
+      attributes: [
+        'id',
+        'date',
+        'station',
+        'typeObject',
+        'natureObject',
+        'user_id'
+      ]
+    });
+
+    if (alerts) {
+      res.json({ alerts });
+    }
+  } catch (e) {
+    res.status(400).json({});
+  }
+});
 
 /**
   @ Get information of the user with his id number
@@ -47,32 +118,6 @@ api.get('/:userid/alert', async (req, res) => {
   @ Get information about a specific alert that he create
 **/
 
-api.post('/:userid/alert', (req, res) => {
-  const date = req.body.date;
-  const typeObject = req.body.typeObject;
-  const natureObject = req.body.natureObject;
-  const station = req.body.station;
-  const user_id = req.body.user_id;
-
-  try {
-    Alert.create({
-      date: date,
-      typeObject: typeObject,
-      natureObject: natureObject,
-      station: station,
-      user_id: user_id
-    }).then(newAlert => {
-      res.json(newAlert);
-    });
-  } catch (e) {
-    res.status(400).json({});
-  }
-});
-
-/**
-  @ Get information about a specific alert that he create
-**/
-
 api.get('/:userid/alert/:alertid', async (req, res) => {
   try {
     let alerts = await Alert.findAll({
@@ -91,17 +136,11 @@ api.get('/:userid/alert/:alertid', async (req, res) => {
 });
 
 /**
-  @ Get information about a specific alert that he create
+  @ Update an alert already created
 **/
 
 function getAlertFromRec(req) {
-  const alert = {
-    id: req.body.id,
-    typeObject: req.body.typeObject,
-    natureObject: req.body.natureObject,
-    station: req.body.station,
-    user_id: req.body.user_id
-  };
+  const { id, typeObject, natureObject, station, user_id } = req.body;
   return alert;
 }
 
@@ -126,14 +165,29 @@ api.patch('/:userid/alert/:alertid', async (req, res) => {
 
 api.delete('/:userid/alert/:alertid', async (req, res) => {
   try {
-    let alert = await Alert.destroy({
+    let alert = await Alert.findOne({
+      attributes: ['id'],
       where: {
         id: req.params.alertid
       }
     });
-    res.json({ succes: 'Alert has been successfully deleted ' });
+
+    if (alert) {
+      try {
+        let alert = await Alert.destroy({
+          where: {
+            id: req.params.alertid
+          }
+        });
+        res.json({ succes: 'Alert has been successfully deleted ' });
+      } catch (e) {
+        res.status(400).json({ err: 'Something went wrong' });
+      }
+    } else {
+      res.status(400).json({ err: "Your alert id don't exist buddy " });
+    }
   } catch (e) {
-    res.status(400).json({});
+    res.status(400);
   }
 });
 

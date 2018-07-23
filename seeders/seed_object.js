@@ -13,7 +13,6 @@ dotenv.config();
 /**
   @ Init of table lostObject with sncf api
 **/
-console.log('1');
 database
   .sync()
   .then(async () => {

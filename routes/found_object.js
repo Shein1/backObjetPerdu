@@ -12,7 +12,7 @@ let api = Router();
 /**
   @ Get list of lost object of the database
   @ There is a possibility of adding query params ( like station, typeObject, natureObject & date ) these queries are optional and independant
-  @ The order is by id descending
+  @ The order is by id ascending
   @ In a information object, query content is written
   @ function isEmpty check if the object given is empty
 **/
@@ -105,7 +105,7 @@ api.get('/', async (req, res) => {
       } catch (e) {
         res
           .status(500)
-          .json({ Error: "Oopsi it' seems like there is an unknow error" });
+          .json({ Error: 'Oopsi it seems like there is an unknow error' });
       }
     }
   }
@@ -232,7 +232,7 @@ api.get('/nature/:natureid', async (req, res) => {
   @ Get information of a specific date
 **/
 
-api.get('/dates/:dateid', async (req, res) => {
+api.get('/date/:dateid', async (req, res) => {
   try {
     let dateid = await DateObject.findAll({
       attributes: ['id', 'date'],
@@ -253,7 +253,7 @@ api.get('/dates/:dateid', async (req, res) => {
   @ Get list of all dates and their id
 **/
 
-api.get('/date', async (req, res) => {
+api.get('/dates', async (req, res) => {
   try {
     let date = await DateObject.findAll({ attributes: ['id', 'date'] });
 
