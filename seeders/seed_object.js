@@ -19,10 +19,7 @@ database
   .then(async () => {
     let baseURL = process.env.URL;
 
-    console.log('2');
-
     axios.get(`${baseURL}`).then(async response => {
-      console.log('------->', response);
       try {
         let data = response.data.records;
         for (let i = 0; i < data.length; i++) {
@@ -111,9 +108,6 @@ database
           await obj.save();
         }
       } catch (e) {
-        console.log(e);
-        assert.isNotOk(e, 'Promise error');
-        done();
         res.status(400);
       }
     });
