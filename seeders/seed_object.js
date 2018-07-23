@@ -111,7 +111,10 @@ database
           await obj.save();
         }
       } catch (e) {
-        res.status(400).json({ e });
+        console.log(e);
+        assert.isNotOk(e, 'Promise error');
+        done();
+        res.status(400);
       }
     });
   })
