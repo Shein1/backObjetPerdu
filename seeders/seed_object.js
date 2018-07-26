@@ -73,7 +73,8 @@ database
 
           if (!objectNature) {
             objectNature = new NatureObject({
-              natureObject: nature
+              natureObject: nature,
+              type_object_id: objectType.id
             });
             await objectNature.save();
           }

@@ -34,5 +34,10 @@ DateObject.init(db, Sequelize);
   @ Foreign Key init
 **/
 
+// A User can have few Alerts but an Alert belongs to one User
 User.hasMany(Alert);
 Alert.belongsTo(User, { constraints: false });
+
+// A TypeObject can have few NatureObject but an NatureObject belongs to one TypeObject
+TypeObject.hasMany(NatureObject);
+NatureObject.belongsTo(TypeObject, { constraints: false });

@@ -196,7 +196,7 @@ api.get('/type/:typeid', async (req, res) => {
 api.get('/natures/', async (req, res) => {
   try {
     let nature = await NatureObject.findAll({
-      attributes: ['id', 'natureObject']
+      attributes: ['id', 'natureObject', 'type_object_id']
     });
 
     if (nature) {
@@ -214,7 +214,7 @@ api.get('/natures/', async (req, res) => {
 api.get('/nature/:natureid', async (req, res) => {
   try {
     let nature = await NatureObject.findOne({
-      attributes: ['id', 'natureObject'],
+      attributes: ['id', 'natureObject', 'type_object_id'],
       where: {
         id: req.params.natureid
       }

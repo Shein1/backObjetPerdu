@@ -160,7 +160,7 @@ api.patch('/:userid/alert/:alertid', async (req, res) => {
 });
 
 /**
-  @ Get information about a specific alert that he create
+  @ Delete the alert of a user
 **/
 
 api.delete('/:userid/alert/:alertid', async (req, res) => {
