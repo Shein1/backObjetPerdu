@@ -3,6 +3,11 @@ import uuid from 'uuid/v4';
 import User from '../models/user';
 import Sequelize, { Op } from 'sequelize';
 import Alert from '../models/alert';
+import nodemailer from 'nodemailer';
+import FoundObject from '../models/object';
+
+import dotenv from 'dotenv';
+dotenv.config();
 
 let api = Router();
 
@@ -70,6 +75,50 @@ api.get('/alerts', async (req, res) => {
 
     if (alerts) {
       res.json({ alerts });
+    }
+
+    for (let i = 0; i < alerts.length; i++) {
+      try {
+        let alertFound = await FoundObject.findOne({
+          attributes: ['id'],
+          where: {
+            date: alerts[i].date,
+            natureObject: alerts[i].natureObject,
+            typeObject: alerts[i].typeObject,
+            station: alerts[i].station
+          }
+        });
+
+        if (alertFound) {
+          nodemailer.createTestAccount((err, account) => {
+            // create reusable transporter object using the default SMTP transport
+            let transporter = nodemailer.createTransport({
+              service: 'gmail',
+              auth: {
+                user: process.env.MAIL_ACC, // generated ethereal user
+                pass: process.env.MAIL_PASS // generated ethereal password
+              }
+            });
+
+            // setup email data with unicode symbols
+            let mailOptions = {
+              from: '"Lost Object 👻" <shekos9396@gmail.com>', // sender address
+              to: 'sheikh.rohman@efreitech.net', // list of receivers
+              subject: 'Alert ✔', // Subject line
+              text: 'Hello world?', // plain text body
+              html: '<b>Hello world?</b>' // html body
+            };
+
+            // send mail with defined transport object
+            transporter.sendMail(mailOptions, (error, info) => {
+              if (error) {
+                return console.log(error);
+              }
+              console.log('Message sent: %s', info.messageId);
+            });
+          });
+        }
+      } catch (e) {}
     }
   } catch (e) {
     res.status(400).json({});

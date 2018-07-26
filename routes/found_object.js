@@ -24,91 +24,112 @@ function isEmpty(obj) {
   return true;
 }
 
-api.get('/', async (req, res) => {
+api.get('/page=:page/', async (req, res) => {
   let { sid, tid, nid, did } = req.query;
+  let limit = 30;
+  let offset = 0;
 
-  let found_object = await FoundObject.findAll({
-    attributes: ['id', 'date', 'station', 'typeObject', 'natureObject'],
-    where: {
-      station: sid ? sid : { [Op.ne]: null },
-      typeObject: tid ? tid : { [Op.ne]: null },
-      natureObject: nid ? nid : { [Op.ne]: null },
-      date: did ? did : { [Op.ne]: null },
-      returnDate: null
-    },
-    order: [['id', 'asc']]
-  });
+  let count = await FoundObject.findAndCountAll().then(async data => {
+    let page = req.params.page; // page number
+    let pages = Math.ceil(data.count / limit);
+    offset = limit * (page - 1);
 
-  if (isEmpty(req.query)) {
-    res.json({ found_object });
-  } else {
-    // Check if the queries in url are those on the array below
-    // If not it will send an error
-    // If yes, if will try to search in table the query given
+    let found_object = await FoundObject.findAll({
+      attributes: ['id', 'date', 'station', 'typeObject', 'natureObject'],
+      where: {
+        station: sid ? sid : { [Op.ne]: null },
+        typeObject: tid ? tid : { [Op.ne]: null },
+        natureObject: nid ? nid : { [Op.ne]: null },
+        date: did ? did : { [Op.ne]: null },
+        returnDate: null
+      },
+      order: [['id', 'asc']],
+      limit: limit,
+      offset: offset
+    });
 
-    const qp = ['sid', 'tid', 'did', 'nid'];
-    let wrongQuery = false;
-    for (let params in req.query) {
-      if (qp.indexOf(params) === -1) {
-        wrongQuery = true;
+    let countObject = await FoundObject.findAndCountAll({
+      where: {
+        station: sid ? sid : { [Op.ne]: null },
+        typeObject: tid ? tid : { [Op.ne]: null },
+        natureObject: nid ? nid : { [Op.ne]: null },
+        date: did ? did : { [Op.ne]: null },
+        returnDate: null
       }
-    }
-    if (wrongQuery) {
-      res.json({ Error: 'Your query is wrong typed ' });
+    });
+
+    if (isEmpty(req.query)) {
+      res.json({ found_object });
     } else {
-      try {
-        // Search if the id given in the url is in the Station table and if it is, it send the attribute stationName
-        // stationName is the name of the Station
+      // Check if the queries in url are those on the array below
+      // If not it will send an error
+      // If yes, if will try to search in table the query given
 
-        let station = await Station.findOne({
-          attributes: ['stationName'],
-          where: {
-            id: sid
-          }
-        });
-
-        let type = await TypeObject.findOne({
-          attributes: ['typeObject'],
-          where: {
-            id: tid
-          }
-        });
-
-        let nature = await NatureObject.findOne({
-          attributes: ['natureObject'],
-          where: {
-            id: nid
-          }
-        });
-
-        let date = await DateObject.findOne({
-          attributes: ['date'],
-          where: {
-            id: did
-          }
-        });
-
-        // Check if any of query return null
-        // If it does, it will return an error
-        // If not, it will return the objects with information based on your queries
-
-        if (!station && !type && !nature && !date) {
-          res
-            .status(400)
-            .json({ Error: 'There is no object found with your criteria' });
-        } else {
-          res.status(200).json({
-            found_object,
-            information: { station, type, nature, date }
-          });
+      const qp = ['sid', 'tid', 'did', 'nid'];
+      let wrongQuery = false;
+      for (let params in req.query) {
+        if (qp.indexOf(params) === -1) {
+          wrongQuery = true;
         }
-      } catch (e) {
-        res
-          .status(500)
-          .json({ Error: 'Oopsi it seems like there is an unknow error' });
+      }
+      if (wrongQuery) {
+        res.json({ Error: 'Your query is wrong typed ' });
+      } else {
+        try {
+          // Search if the id given in the url is in the Station table and if it is, it send the attribute stationName
+          // stationName is the name of the Station
+
+          let station = await Station.findOne({
+            attributes: ['stationName'],
+            where: {
+              id: sid
+            }
+          });
+
+          let type = await TypeObject.findOne({
+            attributes: ['typeObject'],
+            where: {
+              id: tid
+            }
+          });
+
+          let nature = await NatureObject.findOne({
+            attributes: ['natureObject'],
+            where: {
+              id: nid
+            }
+          });
+
+          let date = await DateObject.findOne({
+            attributes: ['date'],
+            where: {
+              id: did
+            }
+          });
+
+          // Check if any of query return null
+          // If it does, it will return an error
+          // If not, it will return the objects with information based on your queries
+
+          if (!station && !type && !nature && !date) {
+            res
+              .status(400)
+              .json({ Error: 'There is no object found with your criteria' });
+          } else {
+            res.status(200).json({
+              found_object,
+              information: { station, type, nature, date },
+              pages: (countObject.count % limit) - 1
+            });
+          }
+        } catch (e) {
+          res
+            .status(500)
+            .json({ Error: 'Oopsi it seems like there is an unknow error' });
+        }
       }
     }
-  }
+  });
 });
 
 /**
