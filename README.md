@@ -72,9 +72,51 @@ Here some data you can get with this api :
 
 ## Built With
 
-- [Nodejs](https://nodejs.org/en/)
-- [Express](http://expressjs.com/)
-- [Heroku](https://www.heroku.com/)
+* [Nodejs](https://nodejs.org/en/)
+* [Express](http://expressjs.com/)
+* [Heroku](https://www.heroku.com/)
+
+## Changelog
+
+- Version 1.3
+  - Change on Readme
+
+- Version 1.2
+  - Changes on /found_object route
+
+- Version 1.1
+  - Changes on routes
+
+- Version 1
+  - Update of model / routes & seeder
+
+- Version 0.9
+  - Update of Readme
+
+- Version 0.8
+  - Change on routes and seeder
+
+- Version 0.7
+  - Test on seeder & fix
+
+- Version 0.6
+  - Change on models / routes / seeders
+  - Add of model Date
+
+- Version 0.5
+  - Add of User route, models and packages
+  - Changes on seeders/routes/models
+
+- Version 0.4
+  - Changes on routes / server
+
+- Version 0.3
+  - Starting routes
+  - Changes of name on models/seeders
+
+- Version 0.2 / 0.1
+  - Creation of models and add of packages
+
 
 ## Author
 
