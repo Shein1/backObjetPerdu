@@ -15,6 +15,8 @@ let api = Router();
   @ The order is by id ascending
   @ In a information object, query content is written
   @ function isEmpty check if the object given is empty
+  @ The number of pages is now indicated in the information when you use a query
+  @ In the url, there is a params page to indicate in which page you are
 **/
 
 function isEmpty(obj) {
@@ -26,7 +28,7 @@ function isEmpty(obj) {
 
 api.get('/page=:page/', async (req, res) => {
   let { sid, tid, nid, did } = req.query;
-  let limit = 30;
+  let limit = 10;
   let offset = 0;
 
   let count = await FoundObject.findAndCountAll().then(async data => {
@@ -57,6 +59,16 @@ api.get('/page=:page/', async (req, res) => {
         returnDate: null
       }
     });
+
+    let pageNb;
+
+    if (countObject.count < 10) {
+      pageNb = 1;
+    } else if (countObject.count > 10 && countObject.count % limit != 0) {
+      pageNb = parseInt(countObject.count / limit) + 1;
+    } else {
+      pageNb = countObject.count / limit;
+    }
 
     if (isEmpty(req.query)) {
       res.json({ found_object });
@@ -116,11 +128,21 @@ api.get('/page=:page/', async (req, res) => {
               .status(400)
               .json({ Error: 'There is no object found with your criteria' });
           } else {
-            res.status(200).json({
-              found_object,
-              information: { station, type, nature, date },
-              pages: (countObject.count % limit) - 1
-            });
+            if (pageNb == 1) {
+              res.status(200).json({
+                found_object,
+                information: { station, type, nature, date },
+                page: pageNb,
+                objects: countObject.count
+              });
+            } else {
+              res.status(200).json({
+                found_object,
+                information: { station, type, nature, date },
+                pages: pageNb,
+                objects: countObject.count
+              });
+            }
           }
         } catch (e) {
           res
