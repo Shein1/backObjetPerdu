@@ -129,7 +129,7 @@ api.get('/page=:page/', async (req, res) => {
           // If it does, it will return an error
           // If not, it will return the objects with information based on your queries
 
-          if (!station && !type && !nature && !date) {
+          if (countObject.count === 0) {
             res
               .status(400)
               .json({ Error: 'There is no object found with your criteria' });
