@@ -138,9 +138,14 @@ api.get('/page=:page/', async (req, res) => {
             } else {
               res.status(200).json({
                 found_object,
-                information: { station, type, nature, date },
-                pages: pageNb,
-                objects: countObject.count
+                information: {
+                  station,
+                  type,
+                  nature,
+                  date,
+                  pages: pageNb,
+                  objects: countObject.count
+                }
               });
             }
           }

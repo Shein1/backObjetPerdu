@@ -89,6 +89,13 @@ api.get('/alerts', async (req, res) => {
           }
         });
 
+        let userMail = await User.findOne({
+          attributes: ['email'],
+          where: {
+            id: alerts[i].user_id
+          }
+        });
+
         if (alertFound) {
           nodemailer.createTestAccount((err, account) => {
             // create reusable transporter object using the default SMTP transport
@@ -103,7 +110,7 @@ api.get('/alerts', async (req, res) => {
             // setup email data with unicode symbols
             let mailOptions = {
               from: '"Lost Object 👻" <shekos9396@gmail.com>', // sender address
-              to: 'sheikh.rohman@efreitech.net', // list of receivers
+              to: userMail.email, // list of receivers
               subject: 'Alert ✔', // Subject line
               text: 'Hello world?', // plain text body
               html: '<b>Hello world?</b>' // html body
