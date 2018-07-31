@@ -74,7 +74,7 @@ api.get('/page=:page/', async (req, res) => {
       res.json({
         found_object,
         information: {
-          page: pageNb,
+          pages: pageNb,
           objects: countObject.count
         }
       });
