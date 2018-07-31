@@ -71,7 +71,13 @@ api.get('/page=:page/', async (req, res) => {
     }
 
     if (isEmpty(req.query)) {
-      res.json({ found_object });
+      res.json({
+        found_object,
+        information: {
+          page: pageNb,
+          objects: countObject.count
+        }
+      });
     } else {
       // Check if the queries in url are those on the array below
       // If not it will send an error
@@ -131,9 +137,14 @@ api.get('/page=:page/', async (req, res) => {
             if (pageNb == 1) {
               res.status(200).json({
                 found_object,
-                information: { station, type, nature, date },
-                page: pageNb,
-                objects: countObject.count
+                information: {
+                  station,
+                  type,
+                  nature,
+                  date,
+                  page: pageNb,
+                  objects: countObject.count
+                }
               });
             } else {
               res.status(200).json({
