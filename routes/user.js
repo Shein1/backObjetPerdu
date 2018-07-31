@@ -97,33 +97,48 @@ api.get('/alerts', async (req, res) => {
         });
 
         if (alertFound) {
-          nodemailer.createTestAccount((err, account) => {
-            // create reusable transporter object using the default SMTP transport
-            let transporter = nodemailer.createTransport({
-              service: 'gmail',
-              auth: {
-                user: process.env.MAIL_ACC, // generated ethereal user
-                pass: process.env.MAIL_PASS // generated ethereal password
-              }
+          try {
+            nodemailer.createTestAccount((err, account) => {
+              // create reusable transporter object using the default SMTP transport
+              let transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                  user: process.env.MAIL_ACC, // generated ethereal user
+                  pass: process.env.MAIL_PASS // generated ethereal password
+                }
+              });
+
+              // setup email data with unicode symbols
+              let mailOptions = {
+                from: '"Lost Object 👻" <shekos9396@gmail.com>', // sender address
+                to: userMail.email, // list of receivers
+                subject: 'Alert ✔', // Subject line
+                text: 'Hello world?', // plain text body
+                html: '<b>Hello world?</b>' // html body
+              };
+
+              // send mail with defined transport object
+              transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                  return console.log(error);
+                }
+                console.log('Message sent: %s', info.messageId);
+              });
             });
 
-            // setup email data with unicode symbols
-            let mailOptions = {
-              from: '"Lost Object 👻" <shekos9396@gmail.com>', // sender address
-              to: userMail.email, // list of receivers
-              subject: 'Alert ✔', // Subject line
-              text: 'Hello world?', // plain text body
-              html: '<b>Hello world?</b>' // html body
-            };
-
-            // send mail with defined transport object
-            transporter.sendMail(mailOptions, (error, info) => {
-              if (error) {
-                return console.log(error);
-              }
-              console.log('Message sent: %s', info.messageId);
-            });
-          });
+            try {
+              let alertToDelete = await Alert.destroy({
+                where: {
+                  id: alerts[i].id
+                }
+              });
+              res.status(200);
+            } catch (e) {
+              res.status(400);
+            }
+          } catch (e) {
+            res.status(400);
+          }
         }
       } catch (e) {}
     }

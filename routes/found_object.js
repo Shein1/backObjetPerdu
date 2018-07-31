@@ -143,7 +143,7 @@ api.get('/page=:page/', async (req, res) => {
                   nature,
                   date,
                   page: pageNb,
-                  objects: countObject.count
+                  object: countObject.count
                 }
               });
             } else {
