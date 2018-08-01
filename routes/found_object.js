@@ -17,6 +17,8 @@ let api = Router();
   @ function isEmpty check if the object given is empty
   @ The number of pages is now indicated in the information when you use a query
   @ In the url, there is a params page to indicate in which page you are
+  @ sid: Station id, tid: objectType id, nid: objectNature id, did: Date id
+  @ Example of request /api/lost_object/page=1/?did=4&tid=4&nid=5&sid=6
 **/
 
 function isEmpty(obj) {
@@ -42,8 +44,7 @@ api.get('/page=:page/', async (req, res) => {
         station: sid ? sid : { [Op.ne]: null },
         typeObject: tid ? tid : { [Op.ne]: null },
         natureObject: nid ? nid : { [Op.ne]: null },
-        date: did ? did : { [Op.ne]: null },
-        returnDate: null
+        date: did ? did : { [Op.ne]: null }
       },
       order: [['id', 'asc']],
       limit: limit,
@@ -55,8 +56,7 @@ api.get('/page=:page/', async (req, res) => {
         station: sid ? sid : { [Op.ne]: null },
         typeObject: tid ? tid : { [Op.ne]: null },
         natureObject: nid ? nid : { [Op.ne]: null },
-        date: did ? did : { [Op.ne]: null },
-        returnDate: null
+        date: did ? did : { [Op.ne]: null }
       }
     });
 
