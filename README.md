@@ -72,8 +72,8 @@ Here some data you can get with this api :
 
 - Version 1.7
 
-  - Change on seeder
-  - Change on model Object
+  - Changes on seeder
+  - Changes on model Object
 
 - Version 1.6
 
