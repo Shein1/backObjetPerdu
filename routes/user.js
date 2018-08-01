@@ -47,7 +47,7 @@ api.post('/alert', async (req, res) => {
       });
       await alert.save();
 
-      res.json({ alert, user });
+      res.status(200).json({ alert, user });
     } catch (e) {
       res.status(400);
     }
@@ -74,7 +74,7 @@ api.get('/alerts', async (req, res) => {
     });
 
     if (alerts) {
-      res.json({ alerts });
+      res.status(200).json({ alerts });
     }
 
     for (let i = 0; i < alerts.length; i++) {
@@ -158,7 +158,7 @@ api.get('/:userid', async (req, res) => {
     const { uuid, username, email } = user.toJSON();
 
     if (user) {
-      res.json({ data: { uuid, username, email } });
+      res.status(200).json({ data: { uuid, username, email } });
     }
   } catch (e) {
     res.status(400).json({});
@@ -178,7 +178,7 @@ api.get('/:userid/alert', async (req, res) => {
     });
 
     if (alerts) {
-      res.json({ alerts });
+      res.status(200).json({ alerts });
     }
   } catch (e) {
     res.status(400).json({ e });
@@ -199,7 +199,7 @@ api.get('/:userid/alert/:alertid', async (req, res) => {
     });
 
     if (alerts) {
-      res.json({ alerts });
+      res.status(200).json({ alerts });
     }
   } catch (e) {
     res.status(400).json({});
@@ -223,7 +223,7 @@ api.patch('/:userid/alert/:alertid', async (req, res) => {
         return alert.updateAttributes(alertUpdated);
       })
       .then(updatedAlert => {
-        res.json(updatedAlert);
+        res.status(200).json({ updatedAlert });
       });
   } catch (e) {
     res.status(400).json({});
@@ -250,7 +250,9 @@ api.delete('/:userid/alert/:alertid', async (req, res) => {
             id: req.params.alertid
           }
         });
-        res.json({ succes: 'Alert has been successfully deleted ' });
+        res
+          .status(200)
+          .json({ succes: 'Alert has been successfully deleted ' });
       } catch (e) {
         res.status(400).json({ err: 'Something went wrong' });
       }

@@ -181,7 +181,7 @@ api.get('/stations/', async (req, res) => {
     });
 
     if (station) {
-      res.json({ station });
+      res.status(200).json({ station });
     }
   } catch (e) {
     res.status(400).json({});
@@ -202,7 +202,7 @@ api.get('/station/:stationid', async (req, res) => {
     });
 
     if (station) {
-      res.json({ station });
+      res.status(200).json({ station });
     }
   } catch (e) {
     res.status(400).json({});
@@ -220,7 +220,7 @@ api.get('/types/', async (req, res) => {
     });
 
     if (type) {
-      res.json({ type });
+      res.status(200).json({ type });
     }
   } catch (e) {
     res.status(400).json({});
@@ -241,7 +241,7 @@ api.get('/type/:typeid', async (req, res) => {
     });
 
     if (type) {
-      res.json({ type });
+      res.status(200).json({ type });
     }
   } catch (e) {
     res.status(400).json({});
@@ -259,7 +259,7 @@ api.get('/natures/', async (req, res) => {
     });
 
     if (nature) {
-      res.json({ nature });
+      res.status(200).json({ nature });
     }
   } catch (e) {
     res.status(400).json({});
@@ -280,7 +280,7 @@ api.get('/nature/:natureid', async (req, res) => {
     });
 
     if (nature) {
-      res.json({ nature });
+      res.status(200).json({ nature });
     }
   } catch (e) {
     res.status(400).json({});
@@ -301,7 +301,7 @@ api.get('/date/:dateid', async (req, res) => {
     });
 
     if (dateid) {
-      res.json({ dateid });
+      res.status(200).json({ dateid });
     }
   } catch (e) {
     res.status(400).json({});
@@ -317,7 +317,7 @@ api.get('/dates', async (req, res) => {
     let date = await DateObject.findAll({ attributes: ['id', 'date'] });
 
     if (date) {
-      res.json({ date });
+      res.status(200).json({ date });
     }
   } catch (e) {
     res.status(400).json({});

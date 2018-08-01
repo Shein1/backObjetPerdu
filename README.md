@@ -70,6 +70,10 @@ Here some data you can get with this api :
 
 ## Changelog
 
+- Version 1.8
+
+  - Add of status code on routes
+
 - Version 1.7
 
   - Changes on seeder
