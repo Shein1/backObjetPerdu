@@ -26,86 +26,88 @@ database
           const type = data[i].fields.gc_obo_type_c;
           const nature = data[i].fields.gc_obo_nature_c;
           const date_id = data[i].fields.date.substr(0, 10);
+          const retDate = data[i].fields.gc_obo_date_heure_restitution_c;
 
-          // Check if station already exist in Station table where stationName is the station name that we get from API
-          // If not, we create a new station with the name we get and save it in the table
+          if (!retDate) {
+            // Check if station already exist in Station table where stationName is the station name that we get from API
+            // If not, we create a new station with the name we get and save it in the table
 
-          let station = await Station.findOne({
-            attributes: ['id'],
-            where: {
-              stationName: name
-            }
-          });
-
-          if (!station) {
-            station = new Station({
-              stationName: name
+            let station = await Station.findOne({
+              attributes: ['id'],
+              where: {
+                stationName: name
+              }
             });
-            await station.save();
-          }
 
-          // Check if objectType already exist in TypeObject table where stationName is the type that we get from API
-          // If not, we create a new typeobject with the name we get and save it in the table
-
-          let objectType = await TypeObject.findOne({
-            attributes: ['id'],
-            where: {
-              typeObject: type
+            if (!station) {
+              station = new Station({
+                stationName: name
+              });
+              await station.save();
             }
-          });
 
-          if (!objectType) {
-            objectType = new TypeObject({
-              typeObject: type
+            // Check if objectType already exist in TypeObject table where stationName is the type that we get from API
+            // If not, we create a new typeobject with the name we get and save it in the table
+
+            let objectType = await TypeObject.findOne({
+              attributes: ['id'],
+              where: {
+                typeObject: type
+              }
             });
-            await objectType.save();
-          }
 
-          // Check if objectNature already exist in NatureObject table where stationName is the nature that we get from API
-          // If not, we create a new objectNature with the name we get and save it in the table
-
-          let objectNature = await NatureObject.findOne({
-            attributes: ['id'],
-            where: {
-              natureObject: nature
+            if (!objectType) {
+              objectType = new TypeObject({
+                typeObject: type
+              });
+              await objectType.save();
             }
-          });
 
-          if (!objectNature) {
-            objectNature = new NatureObject({
-              natureObject: nature,
-              type_object_id: objectType.id
+            // Check if objectNature already exist in NatureObject table where stationName is the nature that we get from API
+            // If not, we create a new objectNature with the name we get and save it in the table
+
+            let objectNature = await NatureObject.findOne({
+              attributes: ['id'],
+              where: {
+                natureObject: nature
+              }
             });
-            await objectNature.save();
-          }
 
-          // Check if objectDate already exist in DateObject table where date is the date that we get from API
-          // If not, we create a new objectDate with the name we get and save it in the table
-
-          let objectDate = await DateObject.findOne({
-            attributes: ['id'],
-            where: {
-              date: date_id
+            if (!objectNature) {
+              objectNature = new NatureObject({
+                natureObject: nature,
+                type_object_id: objectType.id
+              });
+              await objectNature.save();
             }
-          });
 
-          if (!objectDate) {
-            objectDate = new DateObject({
-              date: date_id
+            // Check if objectDate already exist in DateObject table where date is the date that we get from API
+            // If not, we create a new objectDate with the name we get and save it in the table
+
+            let objectDate = await DateObject.findOne({
+              attributes: ['id'],
+              where: {
+                date: date_id
+              }
             });
-            await objectDate.save();
+
+            if (!objectDate) {
+              objectDate = new DateObject({
+                date: date_id
+              });
+              await objectDate.save();
+            }
+
+            // We create and new FoundObject and save it in the table FoundObject
+
+            let obj = new FoundObject({
+              date: objectDate.id,
+              typeObject: objectType.id,
+              natureObject: objectNature.id,
+              station: station.id
+            });
+            await obj.save();
           }
-
-          // We create and new FoundObject and save it in the table FoundObject
-
-          let obj = new FoundObject({
-            date: objectDate.id,
-            typeObject: objectType.id,
-            natureObject: objectNature.id,
-            station: station.id,
-            returnDate: data[i].fields.gc_obo_date_heure_restitution_c
-          });
-          await obj.save();
         }
       } catch (e) {
         res.status(400);

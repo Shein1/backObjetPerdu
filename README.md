@@ -70,6 +70,11 @@ Here some data you can get with this api :
 
 ## Changelog
 
+- Version 1.7
+
+  - Change on seeder
+  - Change on model Object
+
 - Version 1.6
 
   - Change on route /user

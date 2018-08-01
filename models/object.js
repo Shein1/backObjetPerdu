@@ -24,9 +24,6 @@ export default class FoundObject extends Model {
         station: {
           type: DataTypes.INTEGER,
           allowNull: true
-        },
-        returnDate: {
-          type: DataTypes.DATE
         }
       },
       {
