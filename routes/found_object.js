@@ -28,8 +28,9 @@ function isEmpty(obj) {
   return true;
 }
 
-api.get('/page=:page/', async (req, res) => {
+api.get('/page/:page', async (req, res) => {
   let { sid, tid, nid, did } = req.query;
+
   let limit = 10;
   let offset = 0;
 
@@ -43,8 +44,8 @@ api.get('/page=:page/', async (req, res) => {
       where: {
         station: sid ? sid : { [Op.ne]: null },
         typeObject: tid ? tid : { [Op.ne]: null },
-        natureObject: nid ? nid : { [Op.ne]: null },
-        date: did ? did : { [Op.ne]: null }
+        natureObject: nid ? nid : { [Op.ne]: null }
+        // date: did ? did : { [Op.ne]: null }
       },
       order: [['id', 'asc']],
       limit: limit,
@@ -55,8 +56,8 @@ api.get('/page=:page/', async (req, res) => {
       where: {
         station: sid ? sid : { [Op.ne]: null },
         typeObject: tid ? tid : { [Op.ne]: null },
-        natureObject: nid ? nid : { [Op.ne]: null },
-        date: did ? did : { [Op.ne]: null }
+        natureObject: nid ? nid : { [Op.ne]: null }
+        // date: did ? did : { [Op.ne]: null }
       }
     });
 
@@ -118,6 +119,13 @@ api.get('/page=:page/', async (req, res) => {
             }
           });
 
+          let _date = await FoundObject.findOne({
+            attributes: ['id'],
+            where: {
+              date: did
+            }
+          });
+
           // Check if any of query return null
           // If it does, it will return an error
           // If not, it will return the objects with information based on your queries
@@ -134,7 +142,7 @@ api.get('/page=:page/', async (req, res) => {
                   station,
                   type,
                   nature,
-                  date,
+                  _date,
                   page: pageNb,
                   objects: countObject.count
                 }
@@ -146,7 +154,7 @@ api.get('/page=:page/', async (req, res) => {
                   station,
                   type,
                   nature,
-                  date,
+                  _date,
                   pages: pageNb,
                   objects: countObject.count
                 }
