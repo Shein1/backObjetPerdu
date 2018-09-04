@@ -70,6 +70,19 @@ Here some data you can get with this api :
 
 ## Changelog
 
+- Version 2.2
+
+  - Error handling of alert creation
+
+- Version 2.1
+
+  - Fix of error of query search
+
+- Version 2.1
+
+  - Suppression of Date model
+  - Changes on all dates related
+
 - Version 2
 
   - Code flow typed
