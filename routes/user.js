@@ -19,7 +19,7 @@ let api = Router();
 **/
 
 api.post('/alert', async (req, res) => {
-  const { username, email, date, nature, station, type } = req.body;
+  const { username, email, nature, station, type } = req.body;
   let userid = uuid();
   try {
     let user = await User.findOne({
@@ -40,7 +40,6 @@ api.post('/alert', async (req, res) => {
 
     try {
       let alert = new Alert({
-        date: date,
         natureObject: nature,
         typeObject: type,
         station: station,
@@ -64,14 +63,7 @@ api.post('/alert', async (req, res) => {
 api.get('/alerts', async (req, res) => {
   try {
     let alerts = await Alert.findAll({
-      attributes: [
-        'id',
-        'date',
-        'station',
-        'typeObject',
-        'natureObject',
-        'user_id'
-      ]
+      attributes: ['id', 'station', 'typeObject', 'natureObject', 'user_id']
     });
 
     if (alerts) {
@@ -83,7 +75,6 @@ api.get('/alerts', async (req, res) => {
         let alertFound = await FoundObject.findOne({
           attributes: ['id'],
           where: {
-            date: alerts[i].date,
             natureObject: alerts[i].natureObject,
             typeObject: alerts[i].typeObject,
             station: alerts[i].station

@@ -12,7 +12,7 @@ export default class FoundObject extends Model {
           allowNull: false
         },
         date: {
-          type: DataTypes.INTEGER
+          type: DataTypes.STRING
         },
         typeObject: {
           type: DataTypes.INTEGER,

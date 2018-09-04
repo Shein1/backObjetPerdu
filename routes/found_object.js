@@ -6,7 +6,6 @@ import Querystring from 'querystring';
 import TypeObject from '../models/typeobject';
 import NatureObject from '../models/natureobject';
 import Station from '../models/station';
-import DateObject from '../models/date';
 
 let api = Router();
 
@@ -116,13 +115,6 @@ api.get('/page=:page/', async (req, res) => {
             attributes: ['natureObject'],
             where: {
               id: nid
-            }
-          });
-
-          let date = await DateObject.findOne({
-            attributes: ['date'],
-            where: {
-              id: did
             }
           });
 
@@ -282,43 +274,6 @@ api.get('/nature/:natureid', async (req, res) => {
 
     if (nature) {
       res.status(200).json({ nature });
-    }
-  } catch (e) {
-    res.status(400).json({});
-  }
-});
-
-/**
-  @ Get information of a specific date
-**/
-
-api.get('/date/:dateid', async (req, res) => {
-  try {
-    let dateid = await DateObject.findAll({
-      attributes: ['id', 'date'],
-      where: {
-        id: req.params.dateid
-      }
-    });
-
-    if (dateid) {
-      res.status(200).json({ dateid });
-    }
-  } catch (e) {
-    res.status(400).json({});
-  }
-});
-
-/**
-  @ Get list of all dates and their id
-**/
-
-api.get('/dates', async (req, res) => {
-  try {
-    let date = await DateObject.findAll({ attributes: ['id', 'date'] });
-
-    if (date) {
-      res.status(200).json({ date });
     }
   } catch (e) {
     res.status(400).json({});

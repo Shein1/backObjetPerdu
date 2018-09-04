@@ -11,10 +11,6 @@ export default class Alert extends Model {
           primaryKey: true,
           allowNull: false
         },
-        date: {
-          type: DataTypes.INTEGER,
-          allowNull: true
-        },
         typeObject: {
           type: DataTypes.INTEGER,
           allowNull: true

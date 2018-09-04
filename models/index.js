@@ -8,7 +8,6 @@ import FoundObject from './object';
 import Station from './station';
 import NatureObject from './natureobject';
 import TypeObject from './typeobject';
-import DateObject from './date';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -30,7 +29,6 @@ FoundObject.init(db, Sequelize);
 Station.init(db, Sequelize);
 NatureObject.init(db, Sequelize);
 TypeObject.init(db, Sequelize);
-DateObject.init(db, Sequelize);
 
 /**
   @ Foreign Key init
