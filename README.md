@@ -70,6 +70,16 @@ Here some data you can get with this api :
 
 ## Changelog
 
+- Version 2
+
+  - Code flow typed
+  - Changes on route /found_object
+  - Changes on Server
+
+- Version 1.9
+
+  - Add of flow-typed libs
+
 - Version 1.8
 
   - Add of status code on routes

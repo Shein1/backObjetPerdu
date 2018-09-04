@@ -1,3 +1,4 @@
+// @flow
 import { Router } from 'express';
 import uuid from 'uuid/v4';
 import User from '../models/user';

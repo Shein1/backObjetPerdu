@@ -1,3 +1,5 @@
+// @flow
+
 import Sequelize, { Op } from 'sequelize';
 
 import User from './user';

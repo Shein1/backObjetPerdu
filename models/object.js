@@ -1,3 +1,4 @@
+// @flow
 import { Model } from 'sequelize';
 
 export default class FoundObject extends Model {

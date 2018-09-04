@@ -1,3 +1,4 @@
+// @flow
 import { db as database } from '../models';
 import FoundObject from '../models/object';
 import TypeObject from '../models/typeobject';
@@ -10,15 +11,17 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();
 
+if (!process.env.URL) throw new Error('URL missing');
+const url = process.env.URL;
+
 /**
   @ Init of table lostObject with sncf api
 **/
+
 database
   .sync()
   .then(async () => {
-    let baseURL = process.env.URL;
-
-    axios.get(`${baseURL}`).then(async response => {
+    axios.get(`${url}`).then(async response => {
       try {
         let data = response.data.records;
         for (let i = 0; i < data.length; i++) {
@@ -46,7 +49,7 @@ database
               await station.save();
             }
 
-            // Check if objectType already exist in TypeObject table where stationName is the type that we get from API
+            // Check if objectType already exist in TypeObject table where typeObject is the type that we get from API
             // If not, we create a new typeobject with the name we get and save it in the table
 
             let objectType = await TypeObject.findOne({
@@ -63,7 +66,7 @@ database
               await objectType.save();
             }
 
-            // Check if objectNature already exist in NatureObject table where stationName is the nature that we get from API
+            // Check if objectNature already exist in NatureObject table where natureObject is the nature that we get from API
             // If not, we create a new objectNature with the name we get and save it in the table
 
             let objectNature = await NatureObject.findOne({
@@ -98,7 +101,7 @@ database
               await objectDate.save();
             }
 
-            // We create and new FoundObject and save it in the table FoundObject
+            // We create a new FoundObject and save it in the table FoundObject
 
             let obj = new FoundObject({
               date: objectDate.id,
@@ -110,7 +113,7 @@ database
           }
         }
       } catch (e) {
-        res.status(400);
+        console.error(e);
       }
     });
   })

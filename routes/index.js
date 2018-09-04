@@ -1,3 +1,4 @@
+// @flow
 import { Router } from 'express';
 import lostObject from './found_object';
 import user from './user';

@@ -1,3 +1,4 @@
+// @flow
 import { Router } from 'express';
 import FoundObject from '../models/object';
 import Sequelize, { Op } from 'sequelize';
@@ -143,7 +144,7 @@ api.get('/page=:page/', async (req, res) => {
                   nature,
                   date,
                   page: pageNb,
-                  object: countObject.count
+                  objects: countObject.count
                 }
               });
             } else {
