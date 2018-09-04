@@ -21,38 +21,43 @@ let api = Router();
 api.post('/alert', async (req, res) => {
   const { username, email, nature, station, type } = req.body;
   let userid = uuid();
-  try {
-    let user = await User.findOne({
-      attributes: ['id', 'uuid', 'email', 'username'],
-      where: {
-        email: email
-      }
-    });
 
-    if (!user) {
-      user = new User({
-        uuid: userid,
-        email: email,
-        username: username
-      });
-      await user.save();
-    }
-
+  if (!username || !email || !nature || !type) {
+    res.status(400).json('There is a missing parameter');
+  } else {
     try {
-      let alert = new Alert({
-        natureObject: nature,
-        typeObject: type,
-        station: station,
-        user_id: user.id
+      let user = await User.findOne({
+        attributes: ['id', 'uuid', 'email', 'username'],
+        where: {
+          email: email
+        }
       });
-      await alert.save();
 
-      res.status(200).json({ alert, user });
-    } catch (e) {
+      if (!user) {
+        user = new User({
+          uuid: userid,
+          email: email,
+          username: username
+        });
+        await user.save();
+      }
+
+      try {
+        let alert = new Alert({
+          natureObject: nature,
+          typeObject: type,
+          station: station,
+          user_id: user.id
+        });
+        await alert.save();
+
+        res.status(200).json({ alert, user });
+      } catch (e) {
+        res.status(400);
+      }
+    } catch (err) {
       res.status(400);
     }
-  } catch (err) {
-    res.status(400);
   }
 });
 
@@ -67,73 +72,73 @@ api.get('/alerts', async (req, res) => {
     });
 
     if (alerts) {
-      res.status(200).json({ alerts });
-    }
+      for (let i = 0; i < alerts.length; i++) {
+        try {
+          let alertFound = await FoundObject.findOne({
+            attributes: ['id'],
+            where: {
+              natureObject: alerts[i].natureObject,
+              typeObject: alerts[i].typeObject,
+              station: alerts[i].station
+            }
+          });
 
-    for (let i = 0; i < alerts.length; i++) {
-      try {
-        let alertFound = await FoundObject.findOne({
-          attributes: ['id'],
-          where: {
-            natureObject: alerts[i].natureObject,
-            typeObject: alerts[i].typeObject,
-            station: alerts[i].station
-          }
-        });
+          let userMail = await User.findOne({
+            attributes: ['email', 'username'],
+            where: {
+              id: alerts[i].user_id
+            }
+          });
 
-        let userMail = await User.findOne({
-          attributes: ['email'],
-          where: {
-            id: alerts[i].user_id
-          }
-        });
-
-        if (alertFound) {
-          try {
-            nodemailer.createTestAccount((err, account) => {
-              // create reusable transporter object using the default SMTP transport
-              let transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                  user: process.env.MAIL_ACC, // generated ethereal user
-                  pass: process.env.MAIL_PASS // generated ethereal password
-                }
-              });
-
-              // setup email data with unicode symbols
-              let mailOptions = {
-                from: '"Lost Object 👻" <shekos9396@gmail.com>', // sender address
-                to: userMail.email, // list of receivers
-                subject: 'Alert ✔', // Subject line
-                text: 'Hello world?', // plain text body
-                html: '<b>Hello world?</b>' // html body
-              };
-
-              // send mail with defined transport object
-              transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                  return console.log(error);
-                }
-                console.log('Message sent: %s', info.messageId);
-              });
-            });
-
+          if (alertFound) {
             try {
-              let alertToDelete = await Alert.destroy({
-                where: {
-                  id: alerts[i].id
-                }
+              nodemailer.createTestAccount((err, account) => {
+                // create reusable transporter object using the default SMTP transport
+                let transporter = nodemailer.createTransport({
+                  service: 'gmail',
+                  auth: {
+                    user: process.env.MAIL_ACC, // generated ethereal user
+                    pass: process.env.MAIL_PASS // generated ethereal password
+                  }
+                });
+
+                // setup email data with unicode symbols
+                let mailOptions = {
+                  from: '"Lost Object 👻" <shekos9396@gmail.com>', // sender address
+                  to: userMail.email, // list of receivers
+                  subject: 'Alert ✔', // Subject line
+                  text: 'Your object', // plain text body
+                  html:
+                    '<p>Hello userMail.username , we potentially found your object</p>' // html body
+                };
+
+                // send mail with defined transport object
+                transporter.sendMail(mailOptions, (error, info) => {
+                  if (error) {
+                    return console.log(error);
+                  }
+                  console.log('Message sent: %s', info.messageId);
+                });
               });
-              res.status(200);
+
+              try {
+                let alertToDelete = await Alert.destroy({
+                  where: {
+                    id: alerts[i].id
+                  }
+                });
+                res.status(200);
+              } catch (e) {
+                res.status(400);
+              }
             } catch (e) {
               res.status(400);
             }
-          } catch (e) {
-            res.status(400);
           }
-        }
-      } catch (e) {}
+        } catch (e) {}
+      }
     }
+    res.status(200).json({ alerts });
   } catch (e) {
     res.status(400).json({});
   }
