@@ -22,153 +22,153 @@ let api = Router();
 **/
 
 function isEmpty(obj) {
-  for (var key in obj) {
-    if (obj.hasOwnProperty(key)) return false;
-  }
-  return true;
+	for (var key in obj) {
+		if (obj.hasOwnProperty(key)) return false;
+	}
+	return true;
 }
 
 api.get('/page/:page', async (req, res) => {
-  let { sid, tid, nid, did } = req.query;
+	let { sid, tid, nid, did } = req.query;
 
-  let limit = 10;
-  let offset = 0;
+	let limit = 10;
+	let offset = 0;
 
-  let count = await FoundObject.findAndCountAll().then(async data => {
-    let page = req.params.page; // page number
-    let pages = Math.ceil(data.count / limit);
-    offset = limit * (page - 1);
+	let count = await FoundObject.findAndCountAll().then(async data => {
+		let page = req.params.page; // page number
+		let pages = Math.ceil(data.count / limit);
+		offset = limit * (page - 1);
 
-    let found_object = await FoundObject.findAll({
-      attributes: ['id', 'date', 'station', 'typeObject', 'natureObject'],
-      where: {
-        station: sid ? sid : { [Op.ne]: null },
-        typeObject: tid ? tid : { [Op.ne]: null },
-        natureObject: nid ? nid : { [Op.ne]: null }
-        // date: did ? did : { [Op.ne]: null }
-      },
-      order: [['id', 'asc']],
-      limit: limit,
-      offset: offset
-    });
+		let found_object = await FoundObject.findAll({
+			attributes: ['id', 'date', 'station', 'typeObject', 'natureObject'],
+			where: {
+				station: sid ? sid : { [Op.ne]: null },
+				typeObject: tid ? tid : { [Op.ne]: null },
+				natureObject: nid ? nid : { [Op.ne]: null }
+				// date: did ? did : { [Op.ne]: null }
+			},
+			order: [['id', 'asc']],
+			limit: limit,
+			offset: offset
+		});
 
-    let countObject = await FoundObject.findAndCountAll({
-      where: {
-        station: sid ? sid : { [Op.ne]: null },
-        typeObject: tid ? tid : { [Op.ne]: null },
-        natureObject: nid ? nid : { [Op.ne]: null }
-        // date: did ? did : { [Op.ne]: null }
-      }
-    });
+		let countObject = await FoundObject.findAndCountAll({
+			where: {
+				station: sid ? sid : { [Op.ne]: null },
+				typeObject: tid ? tid : { [Op.ne]: null },
+				natureObject: nid ? nid : { [Op.ne]: null }
+				// date: did ? did : { [Op.ne]: null }
+			}
+		});
 
-    let pageNb;
+		let pageNb;
 
-    if (countObject.count < 10) {
-      pageNb = 1;
-    } else if (countObject.count > 10 && countObject.count % limit != 0) {
-      pageNb = parseInt(countObject.count / limit) + 1;
-    } else {
-      pageNb = countObject.count / limit;
-    }
+		if (countObject.count < 10) {
+			pageNb = 1;
+		} else if (countObject.count > 10 && countObject.count % limit != 0) {
+			pageNb = parseInt(countObject.count / limit) + 1;
+		} else {
+			pageNb = countObject.count / limit;
+		}
 
-    if (isEmpty(req.query)) {
-      res.json({
-        found_object,
-        information: {
-          pages: pageNb,
-          objects: countObject.count
-        }
-      });
-    } else {
-      // Check if the queries in url are those on the array below
-      // If not it will send an error
-      // If yes, if will try to search in table the query given
+		if (isEmpty(req.query)) {
+			res.json({
+				found_object,
+				information: {
+					pages: pageNb,
+					objects: countObject.count
+				}
+			});
+		} else {
+			// Check if the queries in url are those on the array below
+			// If not it will send an error
+			// If yes, if will try to search in table the query given
 
-      const qp = ['sid', 'tid', 'did', 'nid'];
-      let wrongQuery = false;
-      for (let params in req.query) {
-        if (qp.indexOf(params) === -1) {
-          wrongQuery = true;
-        }
-      }
-      if (wrongQuery) {
-        res.json({ Error: 'Your query is wrong typed ' });
-      } else {
-        try {
-          // Search if the id given in the url is in the Station table and if it is, it send the attribute stationName
-          // stationName is the name of the Station
+			const qp = ['sid', 'tid', 'did', 'nid'];
+			let wrongQuery = false;
+			for (let params in req.query) {
+				if (qp.indexOf(params) === -1) {
+					wrongQuery = true;
+				}
+			}
+			if (wrongQuery) {
+				res.json({ Error: 'Your query is wrong typed ' });
+			} else {
+				try {
+					// Search if the id given in the url is in the Station table and if it is, it send the attribute stationName
+					// stationName is the name of the Station
 
-          let station = await Station.findOne({
-            attributes: ['stationName'],
-            where: {
-              id: sid
-            }
-          });
+					let station = await Station.findOne({
+						attributes: ['stationName'],
+						where: {
+							id: sid
+						}
+					});
 
-          let type = await TypeObject.findOne({
-            attributes: ['typeObject'],
-            where: {
-              id: tid
-            }
-          });
+					let type = await TypeObject.findOne({
+						attributes: ['typeObject'],
+						where: {
+							id: tid
+						}
+					});
 
-          let nature = await NatureObject.findOne({
-            attributes: ['natureObject'],
-            where: {
-              id: nid
-            }
-          });
+					let nature = await NatureObject.findOne({
+						attributes: ['natureObject'],
+						where: {
+							id: nid
+						}
+					});
 
-          let _date = await FoundObject.findOne({
-            attributes: ['id'],
-            where: {
-              date: did
-            }
-          });
+					let _date = await FoundObject.findOne({
+						attributes: ['id'],
+						where: {
+							date: did
+						}
+					});
 
-          // Check if any of query return null
-          // If it does, it will return an error
-          // If not, it will return the objects with information based on your queries
+					// Check if any of query return null
+					// If it does, it will return an error
+					// If not, it will return the objects with information based on your queries
 
-          if (countObject.count === 0) {
-            res
-              .status(400)
-              .json({ Error: 'There is no object found with your criteria' });
-          } else {
-            if (pageNb == 1) {
-              res.status(200).json({
-                found_object,
-                information: {
-                  station,
-                  type,
-                  nature,
-                  _date,
-                  page: pageNb,
-                  objects: countObject.count
-                }
-              });
-            } else {
-              res.status(200).json({
-                found_object,
-                information: {
-                  station,
-                  type,
-                  nature,
-                  _date,
-                  pages: pageNb,
-                  objects: countObject.count
-                }
-              });
-            }
-          }
-        } catch (e) {
-          res
-            .status(500)
-            .json({ Error: 'Oopsi it seems like there is an unknow error' });
-        }
-      }
-    }
-  });
+					if (countObject.count === 0) {
+						res
+							.status(400)
+							.json({ Error: 'There is no object found with your criteria' });
+					} else {
+						if (pageNb == 1) {
+							res.status(200).json({
+								found_object,
+								information: {
+									station,
+									type,
+									nature,
+									_date,
+									page: pageNb,
+									objects: countObject.count
+								}
+							});
+						} else {
+							res.status(200).json({
+								found_object,
+								information: {
+									station,
+									type,
+									nature,
+									_date,
+									pages: pageNb,
+									objects: countObject.count
+								}
+							});
+						}
+					}
+				} catch (e) {
+					res
+						.status(500)
+						.json({ Error: 'Oopsi it seems like there is an unknow error' });
+				}
+			}
+		}
+	});
 });
 
 /**
@@ -176,17 +176,17 @@ api.get('/page/:page', async (req, res) => {
 **/
 
 api.get('/stations/', async (req, res) => {
-  try {
-    let station = await Station.findAll({
-      attributes: ['id', 'stationName']
-    });
+	try {
+		let station = await Station.findAll({
+			attributes: ['id', 'stationName']
+		});
 
-    if (station) {
-      res.status(200).json({ station });
-    }
-  } catch (e) {
-    res.status(400).json({});
-  }
+		if (station) {
+			res.status(200).json({ station });
+		}
+	} catch (e) {
+		res.status(400).json({});
+	}
 });
 
 /**
@@ -194,20 +194,20 @@ api.get('/stations/', async (req, res) => {
 **/
 
 api.get('/station/:stationid', async (req, res) => {
-  try {
-    let station = await Station.findAll({
-      attributes: ['id', 'stationName'],
-      where: {
-        id: req.params.stationid
-      }
-    });
+	try {
+		let station = await Station.findAll({
+			attributes: ['id', 'stationName'],
+			where: {
+				id: req.params.stationid
+			}
+		});
 
-    if (station) {
-      res.status(200).json({ station });
-    }
-  } catch (e) {
-    res.status(400).json({});
-  }
+		if (station) {
+			res.status(200).json({ station });
+		}
+	} catch (e) {
+		res.status(400).json({});
+	}
 });
 
 /**
@@ -215,17 +215,17 @@ api.get('/station/:stationid', async (req, res) => {
 **/
 
 api.get('/types/', async (req, res) => {
-  try {
-    let type = await TypeObject.findAll({
-      attributes: ['id', 'typeObject']
-    });
+	try {
+		let type = await TypeObject.findAll({
+			attributes: ['id', 'typeObject']
+		});
 
-    if (type) {
-      res.status(200).json({ type });
-    }
-  } catch (e) {
-    res.status(400).json({});
-  }
+		if (type) {
+			res.status(200).json({ type });
+		}
+	} catch (e) {
+		res.status(400).json({});
+	}
 });
 
 /**
@@ -233,20 +233,20 @@ api.get('/types/', async (req, res) => {
 **/
 
 api.get('/type/:typeid', async (req, res) => {
-  try {
-    let type = await TypeObject.findOne({
-      attributes: ['id', 'typeObject'],
-      where: {
-        id: req.params.typeid
-      }
-    });
+	try {
+		let type = await TypeObject.findOne({
+			attributes: ['id', 'typeObject'],
+			where: {
+				id: req.params.typeid
+			}
+		});
 
-    if (type) {
-      res.status(200).json({ type });
-    }
-  } catch (e) {
-    res.status(400).json({});
-  }
+		if (type) {
+			res.status(200).json({ type });
+		}
+	} catch (e) {
+		res.status(400).json({});
+	}
 });
 
 /**
@@ -254,17 +254,17 @@ api.get('/type/:typeid', async (req, res) => {
 **/
 
 api.get('/natures/', async (req, res) => {
-  try {
-    let nature = await NatureObject.findAll({
-      attributes: ['id', 'natureObject', 'type_object_id']
-    });
+	try {
+		let nature = await NatureObject.findAll({
+			attributes: ['id', 'natureObject', 'type_object_id']
+		});
 
-    if (nature) {
-      res.status(200).json({ nature });
-    }
-  } catch (e) {
-    res.status(400).json({});
-  }
+		if (nature) {
+			res.status(200).json({ nature });
+		}
+	} catch (e) {
+		res.status(400).json({});
+	}
 });
 
 /**
@@ -272,20 +272,20 @@ api.get('/natures/', async (req, res) => {
 **/
 
 api.get('/nature/:natureid', async (req, res) => {
-  try {
-    let nature = await NatureObject.findOne({
-      attributes: ['id', 'natureObject', 'type_object_id'],
-      where: {
-        id: req.params.natureid
-      }
-    });
+	try {
+		let nature = await NatureObject.findOne({
+			attributes: ['id', 'natureObject', 'type_object_id'],
+			where: {
+				id: req.params.natureid
+			}
+		});
 
-    if (nature) {
-      res.status(200).json({ nature });
-    }
-  } catch (e) {
-    res.status(400).json({});
-  }
+		if (nature) {
+			res.status(200).json({ nature });
+		}
+	} catch (e) {
+		res.status(400).json({});
+	}
 });
 
 export default api;

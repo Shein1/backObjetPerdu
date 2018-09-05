@@ -21,14 +21,14 @@ const port = process.env.PORT;
 **/
 
 db.sync().then(() => {
-  app.use('/api', routes);
+	app.use('/api', routes);
 
-  app.listen(port, err => {
-    if (err) {
-      console.log(err.red);
-      process.exit(1);
-    }
+	app.listen(port, err => {
+		if (err) {
+			console.log(err.red);
+			process.exit(1);
+		}
 
-    console.log(`Server is running at port ${port}`.cyan);
-  });
+		console.log(`Server is running at port ${port}`.cyan);
+	});
 });

@@ -70,9 +70,18 @@ Here some data you can get with this api :
 
 ## Changelog
 
-- Version 2.2
+- Version 2.4
+
+  - Make code sexy again
+  - Fix of email sending
+
+- Version 2.3
 
   - Error handling of alert creation
+
+- Version 2.2
+
+  - Fix of error of query search
 
 - Version 2.1
 
