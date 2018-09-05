@@ -143,7 +143,7 @@ api.get('/page/:page', async (req, res) => {
 									type,
 									nature,
 									_date,
-									page: pageNb,
+									pages: pageNb,
 									objects: countObject.count
 								}
 							});

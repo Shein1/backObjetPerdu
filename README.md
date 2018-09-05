@@ -70,6 +70,11 @@ Here some data you can get with this api :
 
 ## Changelog
 
+- Version 2.5
+
+  - Update of seeder
+  - Fix of minor errors
+
 - Version 2.4
 
   - Make code sexy again

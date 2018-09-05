@@ -24,12 +24,14 @@ database
 		axios.get(`${url}`).then(async response => {
 			try {
 				let data = response.data.records;
-				for (let i = 0; i < data.length; i++) {
-					const name = data[i].fields.gc_obo_gare_origine_r_name;
-					const type = data[i].fields.gc_obo_type_c;
-					const nature = data[i].fields.gc_obo_nature_c;
-					const _date = data[i].fields.date.substr(0, 10);
-					const retDate = data[i].fields.gc_obo_date_heure_restitution_c;
+				let reversedData = data.reverse();
+				for (let i = 0; i < reversedData.length; i++) {
+					const name = reversedData[i].fields.gc_obo_gare_origine_r_name;
+					const type = reversedData[i].fields.gc_obo_type_c;
+					const nature = reversedData[i].fields.gc_obo_nature_c;
+					const _date = reversedData[i].fields.date.substr(0, 10);
+					const retDate =
+						reversedData[i].fields.gc_obo_date_heure_restitution_c;
 
 					if (!retDate) {
 						// Check if station already exist in Station table where stationName is the station name that we get from API
@@ -92,7 +94,22 @@ database
 							natureObject: objectNature.id,
 							station: station.id
 						});
-						await obj.save();
+
+						// Check if the object already exists on table, if not, we save the new object
+
+						let existingObject = await FoundObject.findOne({
+							attributes: ['id'],
+							where: {
+								typeObject: objectType.id,
+								natureObject: objectNature.id,
+								station: station.id,
+								date: reversedData[i].fields.date.substr(0, 10)
+							}
+						});
+
+						if (!existingObject) {
+							await obj.save();
+						}
 					}
 				}
 			} catch (e) {

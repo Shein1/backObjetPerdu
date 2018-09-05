@@ -114,8 +114,6 @@ api.get('/alerts', async (req, res) => {
 										",<br/><br/>Un objet similaire à votre recherche vient d'être retrouvé</p>" // html body
 								};
 
-								console.log('-------->', mailOptions);
-
 								// send mail with defined transport object
 								transporter.sendMail(mailOptions, (error, info) => {
 									if (error) {
